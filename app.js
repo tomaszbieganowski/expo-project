@@ -2,6 +2,8 @@ const express = require('express');
 const app = express();
 const config = require('./config');
 
+require('./db/mongoose');
+
 //routers
 const apiRouter = require('./routes/api');
 
