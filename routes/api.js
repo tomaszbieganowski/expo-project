@@ -1,8 +1,8 @@
 const express = require('express');
 const router = express.Router(); 
 
-const userActions = require('../actions/api/users');
-
-router.get ('/', userActions.saveUser)
+router.get('/', (req, res) => {
+    res.render('index.ejs');
+})
 
 module.exports = router;
