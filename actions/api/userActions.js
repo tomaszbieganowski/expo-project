@@ -1,5 +1,6 @@
 const User = require('../../db/models/user')
 const bcrypt = require('bcrypt')
+const passport = require('passport');
 
 class userActions 
 {
@@ -58,21 +59,39 @@ class userActions
                     const newUser = new User();
 
                     newUser.name = userName;
-                    newUser.email = userMail;
+                    newUser.email = userMail.toLowerCase();
 
                     //hash password
                     newUser.password = bcrypt.hashSync(userPass, 10); 
                     
                     //save user
-                    newUser.save()        
-                    .then(() => {
+                    newUser.save()
+                    .then(user => {
+                        req.flash(
+                          'success_msg',
+                          'You are now registered and can log in'
+                        );
                         res.redirect('/users/login');
                         return res.status(200);
-                    })
-                    .catch((err) => console.log(err));
+                      })
+                      .catch(err => console.log(err));
                 }
             }) 
         }
+    }
+    
+    loginUser(req, res, next) {
+        passport.authenticate('local', {
+            successRedirect: '/dashboard',
+            failureRedirect: '/users/login',
+            failureFlash: true
+        })(req, res, next);
+    }
+
+    logoutUser(req ,res) {
+        req.logout();
+        req.flash('success_msg', 'You are logged out');
+        res.redirect('/users/login');
     }
 }
 
